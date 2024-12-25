@@ -1,4 +1,8 @@
 ﻿using GeneratePdfDotNetCore.Models;
+using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
+using Rotativa.AspNetCore.Options;
+using System.Diagnostics;
 
 namespace GeneratePdfDotNetCore.Controllers
 {
@@ -63,6 +67,59 @@ namespace GeneratePdfDotNetCore.Controllers
                 CustomSwitches = "--no-pdf-compression"
             };
         }
+
+        public ActionResult GenerateInvoice()
+        {
+            return View("~/Views/Home/DownloadInvoice.cshtml", GetInvoice());
+        }
+
+        public ActionResult DownloadInvoice()
+        {
+
+
+            return new ViewAsPdf("DownloadInvoice", GetInvoice())
+            {
+                FileName = "Invoice.pdf",
+                PageSize = Size.A4,
+                PageOrientation = Orientation.Portrait,
+                CustomSwitches = "--no-pdf-compression"
+            };
+        }
+
+        private invoiceViewModel GetInvoice()
+        {
+            var body = new List<TableBody>
+            {
+                new TableBody {
+                    Item="Interview",
+                    Description="System Admin Profile",
+                    RatePerHours=1000,
+                    Amount=2000,
+                    Qty=2,
+                    Currency="INR"
+                },
+                new TableBody {
+                    Item="Interview",
+                    Description=".Net Profile",
+                    RatePerHours=1000,
+                    Amount=1000,
+                    Qty=1,
+                    Currency="INR"
+                }
+            };
+
+            return new invoiceViewModel
+            {
+                InvoiceNumber = "TSSS240910",
+                InvoiceGeneratedOn = DateTime.Now,
+                Total = 3000.00m,
+                BillToCompany = "6th Sense Advertising",
+                BillFrom = "Tech Squadron Software Solutions",
+                AddressBillFrom = "Mohali, PB, India",
+                WebsiteUrl = "https://techsquadronsolutions.com/",
+                Body = body
+            };
+        }
     }
 
     public class PaymentReceiptViewModel
@@ -71,5 +128,27 @@ namespace GeneratePdfDotNetCore.Controllers
         public DateTime PaymentDate { get; set; }
         public decimal AmountPaid { get; set; }
         public string? CustomerName { get; set; }
+    }
+
+    public class invoiceViewModel
+    {
+        public string? InvoiceNumber { get; set; }
+        public string? BillToCompany { get; set; }
+        public DateTime InvoiceGeneratedOn { get; set; }
+        public string? BillFrom { get; set; }
+        public string? AddressBillFrom { get; set; }
+        public string? WebsiteUrl { get; set; }
+        public decimal Total { get; set; }
+        public List<TableBody>? Body { get; set; }
+    }
+
+    public class TableBody
+    {
+        public string? Item { get; set; }
+        public string? Description { get; set; }
+        public string? Currency { get; set; }
+        public decimal RatePerHours { get; set; }
+        public decimal Qty { get; set; }
+        public decimal Amount { get; set; }
     }
 }

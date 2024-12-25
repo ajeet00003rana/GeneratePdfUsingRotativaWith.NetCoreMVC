@@ -1,0 +1,176 @@
+﻿@model GeneratePdfDotNetCore.Controllers.invoiceViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            page-break-inside: avoid;
+        }
+
+        .receipt {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            page-break-inside: avoid;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .header img {
+                max-width: 150px;
+                height: auto;
+            }
+
+        .details {
+            margin-bottom: 20px;
+        }
+
+            .details p {
+                margin: 5px 0;
+            }
+
+        .items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            .items th, .items td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .items th {
+                background-color: #f2f2f2;
+            }
+
+        .total {
+            text-align: right;
+            font-size: 18px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            .footer p {
+                margin: 5px 0;
+            }
+
+        .left-section {
+            flex: 1; /* Take up remaining space */
+        }
+
+            .left-section img {
+                display: block;
+                width: 80px;
+                height: 86px;
+                position: absolute;
+                top: 60px;
+            }
+
+        .right-section {
+            flex: 2; 
+            text-align: right;
+        }
+
+            .right-section h2 {
+                margin-top: 0;
+                margin-bottom: 10px;
+                font-size: 24px;
+            }
+
+            .right-section p {
+                margin: 0;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div class="left-section">
+                <img src="~/images/techsquaranlogo.png" width="80" height="85" />
+            </div>
+            <div class="right-section">
+                <h2>Invoice</h2>
+                <p>
+                    @Model.BillFrom<br>
+                    @Model.AddressBillFrom<br>
+                    Phone: +917814888137<br>
+                    Email: tech.squadron.software.solutions@gmail.com
+                </p>
+            </div>
+        </div>
+
+        <div class="details">
+            <p>
+                <strong>Bill To:</strong> @Model.BillToCompany<br>
+                <strong>Invoice Number:</strong> @Model.InvoiceNumber<br>
+                <strong>Date:</strong> @Model.InvoiceGeneratedOn.ToString("dd/MM/yyyy")<br>
+            </p>
+        </div>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Total Qty</th>
+                    <th>Rate/Interview</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Body)
+                {
+                    <tr>
+                        <td>@item.Item</td>
+                        <td>@item.Description</td>
+                        <td>@item.Qty</td>
+                        <td>@item.RatePerHours</td>
+                        <td>@item.Amount @item.Currency</td>
+                    </tr>
+                }               
+            </tbody>
+        </table>
+
+        <div class="total">
+            <p><strong>Total Amount:</strong> @Model.Total INR</p>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for your business with <a href="@Model.WebsiteUrl" target="_blank"> Us</a>!</p>
+        </div>
+    </div>
+</body>
+</html>
+
+
